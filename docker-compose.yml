@@ -1,0 +1,18 @@
+version: '3'
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: category_tree_db
+  app:
+    build: .
+    restart: always
+    ports:
+      - "8075:8075"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/category_tree_db
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres

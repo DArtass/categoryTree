@@ -1,0 +1,127 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet author="aleksandr.trofimov" id="create_category_table">
+        <createTable tableName="category">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="name" type="VARCHAR(255)">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="aleksandr.trofimov" id="create_category_parent_table">
+        <createTable tableName="category_parent">
+            <column name="category_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+            <column name="parent_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="aleksandr.trofimov" id="create_dictionary">
+        <createTable tableName="dictionary">
+            <column name="id" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="category_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="language" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="value" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="aleksandr.trofimov" id="add_fk_category_id_parents">
+        <addForeignKeyConstraint baseTableName="category_parent"
+                                 baseColumnNames="category_id"
+                                 referencedTableName="category"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_category_parent_category_id" />
+    </changeSet>
+
+    <changeSet author="aleksandr.trofimov" id="add_fk_parent_id">
+        <addForeignKeyConstraint baseTableName="category_parent"
+                                 baseColumnNames="parent_id"
+                                 referencedTableName="category"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_category_parent_parent_id" />
+    </changeSet>
+
+    <changeSet author="aleksandr.trofimov" id="add_fk_category_id_dictionary">
+        <addForeignKeyConstraint baseTableName="dictionary"
+                                 baseColumnNames="category_id"
+                                 referencedTableName="category"
+                                 referencedColumnNames="id"
+                                 constraintName="fk_dictionary_category_id" />
+    </changeSet>
+
+    <changeSet author="aleksandr.trofimov" id="populate_category_table">
+        <sql>
+            INSERT INTO category (name) VALUES
+                                                ('Category A'),
+                                                ('Category B'),
+                                                ('Category C'),
+                                                ('Category D'),
+                                                ('Category E'),
+                                                ('Category F'),
+                                                ('Category G');
+        </sql>
+    </changeSet>
+
+    <changeSet author="aleksandr.trofimov" id="populate_category_parent_table">
+        <sql>
+            INSERT INTO category_parent (category_id, parent_id) VALUES
+                                                       (4, 1),
+                                                       (5, 1),
+                                                       (5, 2),
+                                                       (6, 2),
+                                                       (7, 2);
+        </sql>
+    </changeSet>
+
+    <changeSet author="aleksandr.trofimov" id="populate_dictionary_table">
+        <sql>
+            INSERT INTO dictionary (category_id, language, value) VALUES
+                                                               (1, 'en', 'Category A'),
+                                                               (2, 'en', 'Category B'),
+                                                               (3, 'en', 'Category C'),
+                                                               (4, 'en', 'Category D'),
+                                                               (5, 'en', 'Category E'),
+                                                               (6, 'en', 'Category F'),
+                                                               (7, 'en', 'Category G'),
+                                                               (1, 'kk', 'Санат A'),
+                                                               (2, 'kk', 'Санат B'),
+                                                               (3, 'kk', 'Санат C'),
+                                                               (4, 'kk', 'Санат D'),
+                                                               (5, 'kk', 'Санат E'),
+                                                               (6, 'kk', 'Санат F'),
+                                                               (7, 'kk', 'Санат G'),
+                                                               (1, 'ru', 'Категория A'),
+                                                               (2, 'ru', 'Категория B'),
+                                                               (3, 'ru', 'Категория C'),
+                                                               (4, 'ru', 'Категория D'),
+                                                               (5, 'ru', 'Категория E'),
+                                                               (6, 'ru', 'Категория F'),
+                                                               (7, 'ru', 'Категория G');
+        </sql>
+    </changeSet>
+
+    <changeSet author="aleksandr.trofimov" id="add_indexes">
+        <createIndex indexName="idx_dictionary_value" tableName="dictionary">
+            <column name="value"/>
+        </createIndex>
+    </changeSet>
+
+</databaseChangeLog>

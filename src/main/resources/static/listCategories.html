@@ -1,0 +1,18 @@
+!DOCTYPE html>
+<html>
+<head>
+    <title>Categories</title>
+</head>
+<body>
+<h1>Categories</h1>
+<ul>
+    <li th:each="category : ${categoryPage.content}">
+        <span th:text="${category.name}"></span>
+    </li>
+</ul>
+<div>
+    <a th:if="${currentPage > 0}" th:href="@{/categories(page=${currentPage - 1})}">Previous</a>
+    <a th:if="${currentPage < categoryPage.totalPages - 1}" th:href="@{/categories(page=${currentPage + 1})}">Next</a>
+</div>
+</body>
+</html>

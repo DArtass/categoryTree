@@ -1,4 +1,4 @@
-package kz.marketPlace.categoryTree;
+package com.marketPlace.categoryTree;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

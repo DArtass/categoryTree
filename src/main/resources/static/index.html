@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+
+        td, th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+</head>
+<body>
+
+<h2>HTML Table</h2>
+
+<table id="categoryList">
+
+</table>
+
+<form action="#">
+    <input id="category_name" placeholder="Category name">
+    <input id="parent_name" placeholder="Parent name">
+    <button onclick="saveCategory()">Save category</button>
+</form>
+
+<script>
+
+    function deleteCategory(categoryName) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("DELETE", "http://localhost:8080/categories/delete/" + categoryName, true);
+        xhttp.send();
+    }
+
+    function forceDeleteCategory(categoryName) {
+        var xhttp = new XMLHttpRequest();
+        xhttp.open("DELETE", "http://localhost:8080/categories/force-delete/" + categoryName, true);
+        xhttp.send();
+    }
+
+    function saveCategory() {
+        var categoryName = document.getElementById("category_name").value;
+        var parentName = document.getElementById("parent_name").value;
+
+        var xmlhttp = new XMLHttpRequest();   // new HttpRequest instance
+        xmlhttp.open("POST", "http://localhost:8075/category/save");
+        xmlhttp.setRequestHeader("Content-Type", "application/json");
+        xmlhttp.send(JSON.stringify({name: categoryName, parentName: parentName}));
+
+        loadCategories();
+    }
+
+    function loadCategories() {
+        var xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                var categories = JSON.parse(this.responseText);
+                var html = '<tr>\n' +
+                    '        <th>Category name</th>\n' +
+                    '        <th>Category parentName</th>\n' +
+                    '        <th>Delete</th>\n' +
+                    '        <th>Force delete</th>\n' +
+                    '    </tr>';
+                for (var i = 0; i < categories.length; i++) {
+                    var category = categories[i];
+                    console.log(category);
+                    html = html + '<tr><td>' + category.name + '</td>\n' +
+                        '        <td>' + category.parentName + '</td>\n' +
+                        '        <td><button onclick="deleteCategory(' + category.name + ')">Delete</button></td>' +
+                        '        <td><button onclick="forceDeleteCategory(' + category.name + ')">Force delete</button></td></tr>';
+
+                }
+                document.getElementById("categoriesList").innerHTML = html;
+            }
+        };
+        xhttp.open("GET", "http://localhost:8075/categories/getList", true);
+        xhttp.send();
+    }
+
+    loadCategories();
+</script>
+</body>
+</html>
